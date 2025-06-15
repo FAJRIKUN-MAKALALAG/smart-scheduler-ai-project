@@ -1,7 +1,8 @@
 
-import { NavLink, useLocation } from "react-router-dom";
-import { Calendar, Mic, Home, Settings as Cog } from "lucide-react";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { Calendar, Mic, Home, Settings as Cog, User, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 const navs = [
   {
@@ -23,6 +24,19 @@ const navs = [
 
 export function AppSidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
+  // Simulasi info user, ganti dengan Supabase Auth jika sudah terintegrasi
+  const [user, setUser] = useState<{email?: string} | null>(() => {
+    const email = localStorage.getItem("ssai_user_email");
+    return email ? { email } : null;
+  });
+
+  const handleLogout = () => {
+    localStorage.removeItem("ssai_hasAuth");
+    localStorage.removeItem("ssai_user_email");
+    setUser(null);
+    navigate("/login");
+  };
 
   return (
     <aside className="bg-sidebar px-4 py-8 h-screen w-56 border-r flex flex-col gap-8 shadow-lg z-10">
@@ -49,9 +63,28 @@ export function AppSidebar() {
         })}
       </nav>
       <div className="flex-1" />
-      <div className="border-t pt-3 text-xs text-muted-foreground text-center">
-        <span className="opacity-60">Smart Scheduler AI Beta</span>
-      </div>
+      {/* USER PROFILE & LOGOUT */}
+      {user && (
+        <div className="flex flex-col gap-3 items-center border-t pt-4 mt-4">
+          <div className="flex items-center gap-2">
+            <span className="bg-primary/10 rounded-full p-2">
+              <User className="w-6 h-6 text-primary" />
+            </span>
+            <span className="text-md font-medium">{user.email ?? "User"}</span>
+          </div>
+          <button
+            className="flex items-center gap-2 px-3 py-1.5 text-sm rounded-md bg-destructive/10 text-destructive hover:bg-destructive/20 transition-all"
+            onClick={handleLogout}
+          >
+            <LogOut className="w-4 h-4" /> Logout
+          </button>
+        </div>
+      )}
+      {!user && (
+        <div className="border-t pt-3 text-xs text-muted-foreground text-center opacity-60">
+          Smart Scheduler AI Beta
+        </div>
+      )}
     </aside>
   );
 }
