@@ -5,12 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Mic } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
+// Ganti endpoint ke model Gemini yang sesuai guide terbaru
+const GEMINI_API_URL =
+  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+
 type SchedulerInputProps = {
   onResult: (s: string) => void;
 };
-
-const GEMINI_API_URL =
-  "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
 
 const SchedulerInput = ({ onResult }: SchedulerInputProps) => {
   const [text, setText] = useState("");
@@ -36,7 +37,7 @@ const SchedulerInput = ({ onResult }: SchedulerInputProps) => {
     onResult(""); // clear previous
 
     try {
-      // Request ke API Gemini Google
+      // Request ke API Gemini Google (endpoint sudah benar sekarang)
       const res = await fetch(
         `${GEMINI_API_URL}?key=${encodeURIComponent(apiKey)}`,
         {
@@ -112,4 +113,3 @@ Contoh format output:
 };
 
 export default SchedulerInput;
-
