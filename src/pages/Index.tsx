@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -27,6 +26,9 @@ const Index = () => {
         <div className="flex gap-4">
           <Button onClick={() => navigate("/onboarding")} size="lg" className="animate-scale-in">
             <Settings className="mr-2" /> Mulai Onboarding
+          </Button>
+          <Button variant="outline" onClick={() => navigate("/login")} size="lg" className="animate-scale-in">
+            <span className="mr-2">👤</span> Login / Daftar
           </Button>
         </div>
         <div className="mt-6 text-sm text-muted-foreground opacity-70">
