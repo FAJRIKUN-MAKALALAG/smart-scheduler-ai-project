@@ -1,4 +1,17 @@
 
+import { useState } from "react";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+
 type ScheduleResultProps = {
   schedule: string | null;
 };
@@ -47,6 +60,9 @@ function renderSchedule(schedule: string) {
 }
 
 export default function ScheduleResult({ schedule }: ScheduleResultProps) {
+  const [open, setOpen] = useState(false);
+  const [reason, setReason] = useState("");
+
   if (!schedule) {
     return (
       <div className="w-full rounded-xl bg-muted/80 p-7 text-muted-foreground flex items-center justify-center text-center text-base min-h-[120px] border border-muted">
@@ -63,14 +79,58 @@ export default function ScheduleResult({ schedule }: ScheduleResultProps) {
         {renderSchedule(schedule)}
       </div>
       <div className="mt-5 flex gap-4">
-        <button className="px-5 py-2 rounded-lg bg-primary text-primary-foreground shadow hover:bg-primary/90 transition font-semibold">
+        <Button className="px-5 py-2 rounded-lg shadow font-semibold">
           Simpan
-        </button>
-        <button className="px-5 py-2 rounded-lg bg-yellow-100 text-yellow-800 font-semibold border border-yellow-300 shadow hover:bg-yellow-200 transition">
-          Revisi/Jelaskan
-        </button>
+        </Button>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button
+              type="button"
+              className="px-5 py-2 rounded-lg bg-yellow-100 text-yellow-800 font-semibold border border-yellow-300 shadow hover:bg-yellow-200 transition"
+              onClick={() => setOpen(true)}
+            >
+              Revisi/Jelaskan
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Revisi/Jelaskan Jadwal AI</DialogTitle>
+              <DialogDescription>
+                Tulis revisi, penjelasan, atau permintaan tambahan terkait jadwal.
+              </DialogDescription>
+            </DialogHeader>
+            <textarea
+              className="w-full border rounded-lg p-2 mt-2 resize-none text-base min-h-[80px] bg-background"
+              placeholder="Tulis permintaan revisi atau penjelasan di sini..."
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              autoFocus
+            />
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => setReason("")}
+                >
+                  Batal
+                </Button>
+              </DialogClose>
+              <Button
+                type="button"
+                disabled={!reason.trim()}
+                onClick={() => {
+                  // Placeholder: nanti bisa dihubungkan ke AI/kirim prompt revisi
+                  setOpen(false);
+                  setReason("");
+                }}
+              >
+                Kirim
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
 }
-
