@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import {
   Dialog,
@@ -16,24 +15,34 @@ type ScheduleResultProps = {
   schedule: string | null;
 };
 
-function renderSchedule(schedule: string) {
-  // Pisah jadwal per baris
-  const lines = schedule.trim().split("\n").filter(Boolean);
-  // Cek apakah mayoritas baris berformat waktu HH:MM - aktivitas
-  const isTimeFormat = (line: string) =>
-    /^\d{1,2}:\d{2}\s*-\s*/.test(line);
+// Markdown sederhana: bold, italic, bullet point, judul
+function simpleMarkdown(str: string) {
+  let txt = str
+    .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+    .replace(/\*(.*?)\*/g, '<i>$1</i>');
+  return txt;
+}
 
-  const validCount = lines.filter(isTimeFormat).length;
-  // Jika paling sedikit 2 baris pakai format waktu, kita tampilkan sebagai daftar yang rapi
-  if (validCount >= 2) {
+function renderSchedule(schedule: string) {
+  if (!schedule) return null;
+
+  // Bagi per baris
+  const lines = schedule.trim().split("\n").filter(Boolean);
+  // Cek untuk list waktu
+  const isTimeLine = (line: string) =>
+    /^\s*\d{1,2}[:.]\d{2}\s*[-–]\s*/.test(line);
+
+  const timeCount = lines.filter(isTimeLine).length;
+  if (timeCount >= 2) {
+    // Format jam - aktivitas jadi list
     return (
-      <ul className="space-y-2 pl-2">
+      <ul className="space-y-2 pl-1">
         {lines.map((line, idx) => {
-          const match = line.match(/^(\d{1,2}:\d{2})\s*-\s*(.*)$/);
+          const match = line.match(/^\s*(\d{1,2}[:.]\d{2})\s*[-–]\s*(.*)$/);
           if (!match) {
             return (
               <li key={idx} className="text-foreground font-mono">
-                {line}
+                <span dangerouslySetInnerHTML={{ __html: simpleMarkdown(line) }} />
               </li>
             );
           }
@@ -44,14 +53,74 @@ function renderSchedule(schedule: string) {
               className="flex gap-4 items-baseline border-l-4 border-primary/40 pl-3 py-1 bg-background/70 rounded"
             >
               <div className="font-bold tracking-wide min-w-[60px] text-sm text-primary">{time}</div>
-              <div className="text-base font-medium">{activity}</div>
+              <div className="text-base font-medium">
+                <span dangerouslySetInnerHTML={{ __html: simpleMarkdown(activity) }} />
+              </div>
             </li>
           );
         })}
       </ul>
     );
   }
-  // fallback default: tampilkan apa adanya
+
+  // Markdown unordered list & judul
+  if (lines.filter(l => /^\s*[\*\-]\s+/.test(l)).length >= 2) {
+    return (
+      <ul className="list-disc pl-6 space-y-1">
+        {lines.map((line, idx) => {
+          const listMatch = line.match(/^\s*[\*\-]\s+(.*)$/);
+          if (listMatch) {
+            return (
+              <li className="text-base" key={idx}>
+                <span dangerouslySetInnerHTML={{ __html: simpleMarkdown(listMatch[1]) }} />
+              </li>
+            );
+          }
+          // Heading markdown
+          if (/^\s*#+\s+/.test(line)) {
+            return (
+              <li key={idx} className="text-lg font-bold pt-2">
+                <span dangerouslySetInnerHTML={{ __html: simpleMarkdown(line.replace(/^#+\s+/, "")) }} />
+              </li>
+            );
+          }
+          // Default
+          return (
+            <li key={idx} className="text-base">
+              <span dangerouslySetInnerHTML={{ __html: simpleMarkdown(line) }} />
+            </li>
+          );
+        })}
+      </ul>
+    );
+  }
+
+  // Judul markdown ## atau ** atau plain judul di awal
+  if (
+    lines[0] &&
+    (lines[0].startsWith("#") ||
+      lines[0].startsWith("**") ||
+      /^[A-Z][\w\s\-:]{2,}$/.test(lines[0]))
+  ) {
+    return (
+      <div className="flex flex-col gap-2">
+        <div className="mb-1 text-lg font-extrabold text-primary">
+          <span dangerouslySetInnerHTML={{ __html: simpleMarkdown(lines[0].replace(/^#+\s*/, "")) }} />
+        </div>
+        <div className="flex flex-col gap-1">
+          {lines.slice(1).map((l, i) => (
+            <div
+              key={i}
+              className="text-base"
+              dangerouslySetInnerHTML={{ __html: simpleMarkdown(l) }}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Fallback: tampilkan apa adanya dengan monospace
   return (
     <pre className="whitespace-pre-wrap text-base font-mono text-foreground leading-snug">
       {schedule}
