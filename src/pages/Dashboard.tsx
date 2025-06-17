@@ -2,7 +2,6 @@
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import SchedulerInput from "@/components/scheduler/SchedulerInput";
 import ScheduleResult from "@/components/scheduler/ScheduleResult";
-import ChatbotInteraction from "@/components/scheduler/ChatbotInteraction";
 import { useState } from "react";
 
 const Dashboard = () => {
@@ -20,14 +19,6 @@ const Dashboard = () => {
         {/* Schedule Result */}
         <div className="mt-8">
           <ScheduleResult schedule={schedule} />
-        </div>
-
-        {/* Interactive Chatbot */}
-        <div className="mt-8">
-          <ChatbotInteraction 
-            onScheduleUpdate={setSchedule}
-            currentSchedule={schedule}
-          />
         </div>
       </main>
     </div>
