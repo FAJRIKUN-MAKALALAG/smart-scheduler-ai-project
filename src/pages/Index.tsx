@@ -1,20 +1,27 @@
+
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { CalendarIcon, Mic, Settings } from "lucide-react";
+import { Settings } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
   const navigate = useNavigate();
+  const { user, loading } = useAuth();
 
   useEffect(() => {
-    // Simulasi simple auth check (replace with Supabase/auth actual)
-    const hasAuth = localStorage.getItem("ssai_hasAuth") === "1";
-    if (!hasAuth) {
-      navigate("/onboarding");
-    } else {
+    if (!loading && user) {
       navigate("/dashboard");
     }
-  }, []);
+  }, [user, loading, navigate]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">

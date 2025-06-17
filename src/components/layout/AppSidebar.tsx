@@ -1,8 +1,8 @@
 
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { Calendar, Mic, Home, Settings as Cog, User, LogOut } from "lucide-react";
+import { NavLink, useLocation } from "react-router-dom";
+import { Calendar, Home, Settings as Cog, User, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
 
 const navs = [
   {
@@ -24,18 +24,10 @@ const navs = [
 
 export function AppSidebar() {
   const location = useLocation();
-  const navigate = useNavigate();
-  // Simulasi info user, ganti dengan Supabase Auth jika sudah terintegrasi
-  const [user, setUser] = useState<{email?: string} | null>(() => {
-    const email = localStorage.getItem("ssai_user_email");
-    return email ? { email } : null;
-  });
+  const { user, signOut } = useAuth();
 
-  const handleLogout = () => {
-    localStorage.removeItem("ssai_hasAuth");
-    localStorage.removeItem("ssai_user_email");
-    setUser(null);
-    navigate("/login");
+  const handleLogout = async () => {
+    await signOut();
   };
 
   return (
@@ -78,11 +70,6 @@ export function AppSidebar() {
           >
             <LogOut className="w-4 h-4" /> Logout
           </button>
-        </div>
-      )}
-      {!user && (
-        <div className="border-t pt-3 text-xs text-muted-foreground text-center opacity-60">
-          Smart Scheduler AI Beta
         </div>
       )}
     </aside>
