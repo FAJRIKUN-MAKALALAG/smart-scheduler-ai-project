@@ -1,8 +1,16 @@
-
 import { NavLink, useLocation } from "react-router-dom";
 import { Calendar, Home, Settings as Cog, User, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
+import { useState } from "react";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { useSchedules } from "@/hooks/useSchedules";
 
 const navs = [
   {
@@ -25,6 +33,22 @@ const navs = [
 export function AppSidebar() {
   const location = useLocation();
   const { user, signOut } = useAuth();
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const { schedules } = useSchedules();
+
+  // Ambil semua tanggal yang ada jadwalnya
+  const scheduleDates = schedules.map((s) =>
+    new Date(s.start_time).toDateString()
+  );
+
+  // Ambil jadwal untuk tanggal yang dipilih
+  const selectedDateSchedules = selectedDate
+    ? schedules.filter(
+        (s) =>
+          new Date(s.start_time).toDateString() === selectedDate.toDateString()
+      )
+    : [];
 
   const handleLogout = async () => {
     await signOut();
@@ -34,7 +58,9 @@ export function AppSidebar() {
     <aside className="bg-sidebar px-4 py-8 h-screen w-56 border-r flex flex-col gap-8 shadow-lg z-10">
       <div className="mb-6 flex flex-col items-center">
         <div className="text-2xl font-black tracking-tight">SCHEDULER AI</div>
-        <div className="mt-1 text-xs text-muted-foreground opacity-70">by Fajrikun</div>
+        <div className="mt-1 text-xs text-muted-foreground opacity-70">
+          by Fajrikun
+        </div>
       </div>
       <nav className="flex flex-col gap-4">
         {navs.map((item) => {
