@@ -88,25 +88,28 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen flex bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <AppSidebar />
-      <main className="flex-1 flex flex-col p-6 lg:p-8 animate-fade-in">
+      <main className="flex-1 flex flex-col p-4 lg:p-8 animate-fade-in pb-20 md:pb-8">
         {/* Header Section */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-3 rounded-2xl shadow-lg">
-              <Brain className="w-8 h-8 text-white" />
-            </div>
-            <div className="flex-1">
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Smart Scheduler AI
-              </h1>
-              <p className="text-muted-foreground text-lg">
-                Kelola jadwal Anda dengan bantuan AI yang pintar
-              </p>
+        <div className="mb-6 lg:mb-8">
+          <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
+            <div className="flex items-center gap-3">
+              <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-3 rounded-2xl shadow-lg">
+                <Brain className="w-8 h-8 text-white" />
+              </div>
+              <div className="flex-1">
+                <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  Smart Scheduler AI
+                </h1>
+                <p className="text-sm md:text-lg text-muted-foreground">
+                  Kelola jadwal Anda dengan bantuan AI yang pintar
+                </p>
+              </div>
             </div>
             <div className="flex items-center gap-3">
               <Button
                 onClick={handleToggleEmailNotifications}
                 variant="outline"
+                size="sm"
                 className={`gap-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 hover:bg-white dark:hover:bg-gray-800 ${
                   enabled
                     ? "border-green-500 text-green-600"
@@ -118,63 +121,73 @@ const Dashboard = () => {
                 ) : (
                   <MailX className="w-4 h-4" />
                 )}
-                {enabled ? "Email Aktif" : "Email Nonaktif"}
+                <span className="hidden md:inline">
+                  {enabled ? "Email Aktif" : "Email Nonaktif"}
+                </span>
               </Button>
             </div>
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
-              <div className="flex items-center gap-3">
-                <div className="bg-blue-100 dark:bg-blue-900/30 p-2 rounded-xl">
-                  <Clock className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl md:rounded-2xl p-4 md:p-6 shadow-lg border border-white/20">
+              <div className="flex items-center gap-2 md:gap-3">
+                <div className="bg-blue-100 dark:bg-blue-900/30 p-2 rounded-lg">
+                  <Clock className="w-4 h-4 md:w-5 md:h-5 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Hari Ini</p>
-                  <p className="text-2xl font-bold">
+                  <p className="text-xs md:text-sm text-muted-foreground">
+                    Hari Ini
+                  </p>
+                  <p className="text-lg md:text-2xl font-bold">
                     {todaySchedules.length} Jadwal
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
-              <div className="flex items-center gap-3">
-                <div className="bg-green-100 dark:bg-green-900/30 p-2 rounded-xl">
-                  <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl md:rounded-2xl p-4 md:p-6 shadow-lg border border-white/20">
+              <div className="flex items-center gap-2 md:gap-3">
+                <div className="bg-green-100 dark:bg-green-900/30 p-2 rounded-lg">
+                  <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600 dark:text-green-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Selesai</p>
-                  <p className="text-2xl font-bold">
+                  <p className="text-xs md:text-sm text-muted-foreground">
+                    Selesai
+                  </p>
+                  <p className="text-lg md:text-2xl font-bold">
                     {completedSchedules.length}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
-              <div className="flex items-center gap-3">
-                <div className="bg-orange-100 dark:bg-orange-900/30 p-2 rounded-xl">
-                  <AlertCircle className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl md:rounded-2xl p-4 md:p-6 shadow-lg border border-white/20">
+              <div className="flex items-center gap-2 md:gap-3">
+                <div className="bg-orange-100 dark:bg-orange-900/30 p-2 rounded-lg">
+                  <AlertCircle className="w-4 h-4 md:w-5 md:h-5 text-orange-600 dark:text-orange-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Berikutnya</p>
-                  <p className="text-2xl font-bold">
+                  <p className="text-xs md:text-sm text-muted-foreground">
+                    Berikutnya
+                  </p>
+                  <p className="text-lg md:text-2xl font-bold">
                     {upcomingSchedules.length}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
-              <div className="flex items-center gap-3">
-                <div className="bg-purple-100 dark:bg-purple-900/30 p-2 rounded-xl">
-                  <Mail className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl md:rounded-2xl p-4 md:p-6 shadow-lg border border-white/20">
+              <div className="flex items-center gap-2 md:gap-3">
+                <div className="bg-purple-100 dark:bg-purple-900/30 p-2 rounded-lg">
+                  <Mail className="w-4 h-4 md:w-5 md:h-5 text-purple-600 dark:text-purple-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Email</p>
-                  <p className="text-2xl font-bold">
+                  <p className="text-xs md:text-sm text-muted-foreground">
+                    Email
+                  </p>
+                  <p className="text-lg md:text-2xl font-bold">
                     {enabled ? "Aktif" : "Nonaktif"}
                   </p>
                 </div>
@@ -187,17 +200,19 @@ const Dashboard = () => {
           <TabsList className="grid w-full grid-cols-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 shadow-lg">
             <TabsTrigger
               value="ai-scheduler"
-              className="gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white"
+              className="gap-2 text-sm md:text-base data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white"
             >
               <Brain className="w-4 h-4" />
-              AI Scheduler
+              <span className="hidden md:inline">AI Scheduler</span>
+              <span className="md:hidden">AI</span>
             </TabsTrigger>
             <TabsTrigger
               value="today"
-              className="gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white"
+              className="gap-2 text-sm md:text-base data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white"
             >
               <Calendar className="w-4 h-4" />
-              Hari Ini
+              <span className="hidden md:inline">Hari Ini</span>
+              <span className="md:hidden">Hari Ini</span>
             </TabsTrigger>
           </TabsList>
 

@@ -1,13 +1,17 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { Calendar, Home, Settings as Cog, User, LogOut } from "lucide-react";
+import {
+  Calendar,
+  Home,
+  Settings as Cog,
+  User,
+  LogOut,
+  Menu,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { useSchedules } from "@/hooks/useSchedules";
@@ -33,6 +37,8 @@ const navs = [
 export function AppSidebar() {
   const location = useLocation();
   const { user, signOut } = useAuth();
+  const isMobile = useIsMobile();
+  const [isOpen, setIsOpen] = useState(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const { schedules } = useSchedules();
@@ -54,8 +60,8 @@ export function AppSidebar() {
     await signOut();
   };
 
-  return (
-    <aside className="bg-sidebar px-4 py-8 h-screen w-56 border-r flex flex-col gap-8 shadow-lg z-10">
+  const SidebarContent = () => (
+    <div className="flex flex-col gap-8 h-full">
       <div className="mb-6 flex flex-col items-center">
         <div className="text-2xl font-black tracking-tight">SCHEDULER AI</div>
         <div className="mt-1 text-xs text-muted-foreground opacity-70">
@@ -69,6 +75,7 @@ export function AppSidebar() {
             <NavLink
               key={item.name}
               to={item.path}
+              onClick={() => isMobile && setIsOpen(false)}
               className={cn(
                 "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors font-medium hover:bg-muted/70",
                 isActive ? "bg-muted text-primary" : "text-muted-foreground"
@@ -98,6 +105,49 @@ export function AppSidebar() {
           </button>
         </div>
       )}
+    </div>
+  );
+
+  // Mobile Bottom Navigation
+  if (isMobile) {
+    return (
+      <>
+        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+          <SheetTrigger asChild>
+            <button className="fixed top-4 left-4 z-50 p-2 bg-background rounded-lg shadow-lg">
+              <Menu className="w-6 h-6" />
+            </button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-72 p-6">
+            <SidebarContent />
+          </SheetContent>
+        </Sheet>
+        <nav className="fixed bottom-0 left-0 right-0 bg-background border-t py-2 px-6 flex justify-around items-center z-50">
+          {navs.map((item) => {
+            const isActive = location.pathname.startsWith(item.path);
+            return (
+              <NavLink
+                key={item.name}
+                to={item.path}
+                className={cn(
+                  "flex flex-col items-center gap-1 p-2",
+                  isActive ? "text-primary" : "text-muted-foreground"
+                )}
+              >
+                <item.icon className="w-5 h-5" />
+                <span className="text-xs">{item.name}</span>
+              </NavLink>
+            );
+          })}
+        </nav>
+      </>
+    );
+  }
+
+  // Desktop Sidebar
+  return (
+    <aside className="bg-sidebar px-4 py-8 h-screen w-56 border-r flex flex-col gap-8 shadow-lg z-10">
+      <SidebarContent />
     </aside>
   );
 }

@@ -477,12 +477,12 @@ const SchedulerInput = ({ onResult }: SchedulerInputProps) => {
     if (!text) return;
 
     const apiKey = localStorage.getItem("ssai_apiKey") || "";
-    const provider = localStorage.getItem("ssai_provider") || "";
+    let provider = localStorage.getItem("ssai_provider") || "";
+    if (!provider) provider = "gemini";
     if (!apiKey || provider !== "gemini") {
       toast({
         title: "API Key Gemini belum diatur.",
-        description:
-          "Silakan pilih provider Gemini dan pastikan API key sudah tersimpan di onboarding.",
+        description: "Silakan atur API key Gemini di halaman pengaturan.",
       });
       return;
     }
